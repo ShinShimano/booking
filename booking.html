@@ -518,11 +518,14 @@ async function getUserProfile() {
         // ตรวจสอบการส่งฟอร์ม
         form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const phoneNumber = form.phonenumber.value;
-    const phoneRegex = /^[0-9]+$/; // ตรวจสอบเบอร์โทรว่าเป็นตัวเลขทั้งหมด
-    
+
+    const phoneNumber = form.phonenumber.value.trim(); // ตัดช่องว่างหัว-ท้าย
+
+    // ตรวจสอบว่าเป็นตัวเลขเท่านั้น และต้อง 10 หลักพอดี
+    const phoneRegex = /^[0-9]{10}$/;
+
     if (!phoneRegex.test(phoneNumber)) {
-        showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกเบอร์โทรศัพท์โดยไม่ใส่ช่องว่างหรือเครื่องหมายคั่น', 'error');
+        showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกเบอร์โทรให้ถูกต้อง (ตัวเลข 10 หลักติดกันเท่านั้น)', 'error');
         return;
     }
 
