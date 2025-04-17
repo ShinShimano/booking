@@ -567,6 +567,19 @@ async function getUserProfile() {
             }
             popup.style.display = 'flex';
         }
-    </script>
+// ⬇️ วางตรงนี้เลย
+    document.addEventListener('DOMContentLoaded', async () => {
+        await liff.init({ liffId: "2006389089-vKl4jzk9" }); // ใส่ LIFF ID จริงของคุณ
+
+        if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+        }
+
+        const profile = await liff.getProfile();
+        form.name.value = profile.displayName;
+        form.name.readOnly = true;
+    });
+</script>
 </body>
 </html>
