@@ -231,17 +231,19 @@
             }
         }
 
-        // ฟังก์ชันดึงข้อมูลโปรไฟล์ผู้ใช้จาก LIFF
-        async function getUserProfile() {
-            try {
-                const profile = await liff.getProfile();
-                document.getElementById('userlineid').value = profile.userId;
-                document.getElementById('displayName').value = profile.displayName;
-                fetchData(profile.userId);
-            } catch (error) {
-                console.error('Error getting profile data:', error);
-            }
-        }
+// ฟังก์ชันดึงข้อมูลโปรไฟล์ผู้ใช้จาก LIFF
+async function getUserProfile() {
+    try {
+        const profile = await liff.getProfile();
+        // ใช้ชื่อจากไลน์แทนการให้กรอกชื่อ
+        document.getElementById('displayName').value = profile.displayName;
+        document.getElementById('userlineid').value = profile.userId;
+        fetchData(profile.userId);
+    } catch (error) {
+        console.error('Error getting profile data:', error);
+    }
+}
+
 
         // ฟังก์ชันดึงข้อมูลผู้ใช้จากเซิร์ฟเวอร์
         async function fetchData(userId) {
@@ -288,15 +290,22 @@
 
         // ฟังก์ชันเปลี่ยนขั้นตอนจาก Step 1 ไป Step 2
         function nextStep() {
-            if (currentStep < 2) {
-                document.getElementById(`step${currentStep}`).style.display = 'none';
-                currentStep++;
-                document.getElementById(`step${currentStep}`).style.display = 'block';
-                if (currentStep === 2) {
-                    scrollToCurrentDay();
-                }
-            }
+    const address = form.note.value;
+    if (!address.trim()) {
+        showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกข้อมูลที่อยู่ก่อน', 'error');
+        return;
+    }
+
+    if (currentStep < 2) {
+        document.getElementById(`step${currentStep}`).style.display = 'none';
+        currentStep++;
+        document.getElementById(`step${currentStep}`).style.display = 'block';
+        if (currentStep === 2) {
+            scrollToCurrentDay();
         }
+    }
+}
+
 
         // ฟังก์ชันย้อนกลับไปยัง Step ก่อนหน้า
         function prevStep() {
@@ -498,11 +507,19 @@
 
         // ตรวจสอบการส่งฟอร์ม
         form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (!selectedDate) {
-                showPopup('เกิดข้อผิดพลาด', 'กรุณาเลือกวันที่', 'error');
-                return;
-            }
+    e.preventDefault();
+    const phoneNumber = form.phonenumber.value;
+    const phoneRegex = /^[0-9]+$/; // ตรวจสอบเบอร์โทรว่าเป็นตัวเลขทั้งหมด
+    
+    if (!phoneRegex.test(phoneNumber)) {
+        showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกเบอร์โทรศัพท์โดยไม่ใส่ช่องว่างหรือเครื่องหมายคั่น', 'error');
+        return;
+    }
+
+    if (!selectedDate) {
+        showPopup('เกิดข้อผิดพลาด', 'กรุณาเลือกวันที่', 'error');
+        return;
+    }
             showPopup('<p class="text-blue-900">📆 ยืนยันการนัดหมาย</p>', `
                 <p>บริการ: ${form.service.value}</p>
                 <p>สาขา: ${form.locationservice.value}</p>
