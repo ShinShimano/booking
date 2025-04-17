@@ -196,28 +196,21 @@
         let WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwoIEng-LzM9R0kIZIqOIXEXuWx7M9FdDB2BRHCWWduKoi6XrXk6cXK3rEoKdw2xw5Tdw/exec';
         const WEB_APP_MEMBER_URL = 'https://script.google.com/macros/s/AKfycbxOSzL_UVqKXRzh0eZ-Y4xbAxyXpnZPMO1OGdl8SQCSwKvEAvUc6WmOsFTYhS5z29hu/exec';
         const LIFF_ID = '2006389096-VmKBN6l7';
-        
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    await liff.init({ liffId: "2006389096-VmKBN6l7" }); // ✅ ใช้ LIFF ID จริงของคุณ
 
-    if (!liff.isLoggedIn()) {
-      liff.login(); // เข้าสู่ระบบอัตโนมัติถ้ายังไม่ login
-      return;
-    }
+        // ⬇️ วางตรงนี้เลย
+    document.addEventListener('DOMContentLoaded', async () => {
+        await liff.init({ liffId: "2006389096-VmKBN6l7" }); // ใส่ LIFF ID จริงของคุณ
 
-    try {
-      const profile = await liff.getProfile();
-      const nameInput = document.getElementById('name');
-      if (nameInput) {
-        nameInput.value = profile.displayName;
-        nameInput.readOnly = true; // ไม่ให้แก้ไข
-      }
-    } catch (err) {
-      console.error("เกิดข้อผิดพลาดในการโหลดชื่อจาก LINE:", err);
-    }
-  });
-        
+        if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+        }
+
+        const profile = await liff.getProfile();
+        form.name.value = profile.displayName;
+        form.name.readOnly = true;
+    });
         
 
         // แสดงฟอร์มการจอง (Step 1) เมื่อเปิดหน้า
