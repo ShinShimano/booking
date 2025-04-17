@@ -290,10 +290,20 @@ async function getUserProfile() {
 
         // ฟังก์ชันเปลี่ยนขั้นตอนจาก Step 1 ไป Step 2
         function nextStep() {
-    const address = form.note.value;
-    if (!address.trim()) {
-        showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกข้อมูลที่อยู่ก่อน', 'error');
-        return;
+    if (currentStep === 1) {
+        const address = form.note.value.trim();
+        if (!address) {
+            showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกข้อมูลที่อยู่ก่อน', 'error');
+            return;
+        }
+
+        const phone = form.phonenumber.value.trim();
+        const phonePattern = /^[0-9]{10}$/; // ตรวจสอบว่าเป็นตัวเลข 10 หลักตรงเป๊ะ
+
+        if (!phonePattern.test(phone)) {
+            showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกเบอร์โทรให้ถูกต้อง (ตัวเลข 10 หลักติดกันเท่านั้น)', 'error');
+            return;
+        }
     }
 
     if (currentStep < 2) {
