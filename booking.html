@@ -189,36 +189,13 @@
                 <button type="button" onclick="prevStep()" class="w-32 p-2 mt-5 bg-white text-slate-800 py-3 rounded-2xl">กลับหน้าหลัก</button>
             </div>
         </form>
-
-        <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    await liff.init({ liffId: "2006389089-vKl4jzk9" }); // ✅ ใช้ LIFF ID จริงของคุณ
-
-    if (!liff.isLoggedIn()) {
-      liff.login(); // เข้าสู่ระบบอัตโนมัติถ้ายังไม่ login
-      return;
-    }
-
-    try {
-      const profile = await liff.getProfile();
-      const nameInput = document.getElementById('name');
-      if (nameInput) {
-        nameInput.value = profile.displayName;
-        nameInput.readOnly = true; // ไม่ให้แก้ไข
-      }
-    } catch (err) {
-      console.error("เกิดข้อผิดพลาดในการโหลดชื่อจาก LINE:", err);
-    }
-  });
-</script>
-        
     </div>
 
     <script>
         // ตัวแปรสำหรับใช้กับ URL ของ Web App และ LIFF
         let WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwoIEng-LzM9R0kIZIqOIXEXuWx7M9FdDB2BRHCWWduKoi6XrXk6cXK3rEoKdw2xw5Tdw/exec';
         const WEB_APP_MEMBER_URL = 'https://script.google.com/macros/s/AKfycbxOSzL_UVqKXRzh0eZ-Y4xbAxyXpnZPMO1OGdl8SQCSwKvEAvUc6WmOsFTYhS5z29hu/exec';
-        const LIFF_ID = '2006389089-vKl4jzk9';
+        const LIFF_ID = '2006389096-VmKBN6l7';
 
         // แสดงฟอร์มการจอง (Step 1) เมื่อเปิดหน้า
         document.getElementById('step1').style.display = 'block';
@@ -254,19 +231,17 @@
             }
         }
 
-// ฟังก์ชันดึงข้อมูลโปรไฟล์ผู้ใช้จาก LIFF
-async function getUserProfile() {
-    try {
-        const profile = await liff.getProfile();
-        // ใช้ชื่อจากไลน์แทนการให้กรอกชื่อ
-        document.getElementById('displayName').value = profile.displayName;
-        document.getElementById('userlineid').value = profile.userId;
-        fetchData(profile.userId);
-    } catch (error) {
-        console.error('Error getting profile data:', error);
-    }
-}
-
+        // ฟังก์ชันดึงข้อมูลโปรไฟล์ผู้ใช้จาก LIFF
+        async function getUserProfile() {
+            try {
+                const profile = await liff.getProfile();
+                document.getElementById('userlineid').value = profile.userId;
+                document.getElementById('displayName').value = profile.displayName;
+                fetchData(profile.userId);
+            } catch (error) {
+                console.error('Error getting profile data:', error);
+            }
+        }
 
         // ฟังก์ชันดึงข้อมูลผู้ใช้จากเซิร์ฟเวอร์
         async function fetchData(userId) {
@@ -313,32 +288,15 @@ async function getUserProfile() {
 
         // ฟังก์ชันเปลี่ยนขั้นตอนจาก Step 1 ไป Step 2
         function nextStep() {
-    if (currentStep === 1) {
-        const address = form.note.value.trim();
-        if (!address) {
-            showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกข้อมูลที่อยู่ก่อน', 'error');
-            return;
+            if (currentStep < 2) {
+                document.getElementById(`step${currentStep}`).style.display = 'none';
+                currentStep++;
+                document.getElementById(`step${currentStep}`).style.display = 'block';
+                if (currentStep === 2) {
+                    scrollToCurrentDay();
+                }
+            }
         }
-
-        const phone = form.phonenumber.value.trim();
-        const phonePattern = /^[0-9]{10}$/; // ตรวจสอบว่าเป็นตัวเลข 10 หลักตรงเป๊ะ
-
-        if (!phonePattern.test(phone)) {
-            showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกเบอร์โทรให้ถูกต้อง (ตัวเลข 10 หลักติดกันเท่านั้น)', 'error');
-            return;
-        }
-    }
-
-    if (currentStep < 2) {
-        document.getElementById(`step${currentStep}`).style.display = 'none';
-        currentStep++;
-        document.getElementById(`step${currentStep}`).style.display = 'block';
-        if (currentStep === 2) {
-            scrollToCurrentDay();
-        }
-    }
-}
-
 
         // ฟังก์ชันย้อนกลับไปยัง Step ก่อนหน้า
         function prevStep() {
@@ -540,22 +498,11 @@ async function getUserProfile() {
 
         // ตรวจสอบการส่งฟอร์ม
         form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const phoneNumber = form.phonenumber.value.trim(); // ตัดช่องว่างหัว-ท้าย
-
-    // ตรวจสอบว่าเป็นตัวเลขเท่านั้น และต้อง 10 หลักพอดี
-    const phoneRegex = /^[0-9]{10}$/;
-
-    if (!phoneRegex.test(phoneNumber)) {
-        showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกเบอร์โทรให้ถูกต้อง (ตัวเลข 10 หลักติดกันเท่านั้น)', 'error');
-        return;
-    }
-
-    if (!selectedDate) {
-        showPopup('เกิดข้อผิดพลาด', 'กรุณาเลือกวันที่', 'error');
-        return;
-    }
+            e.preventDefault();
+            if (!selectedDate) {
+                showPopup('เกิดข้อผิดพลาด', 'กรุณาเลือกวันที่', 'error');
+                return;
+            }
             showPopup('<p class="text-blue-900">📆 ยืนยันการนัดหมาย</p>', `
                 <p>บริการ: ${form.service.value}</p>
                 <p>สาขา: ${form.locationservice.value}</p>
@@ -590,19 +537,6 @@ async function getUserProfile() {
             }
             popup.style.display = 'flex';
         }
-// ⬇️ วางตรงนี้เลย
-    document.addEventListener('DOMContentLoaded', async () => {
-        await liff.init({ liffId: "2006389089-vKl4jzk9" }); // ใส่ LIFF ID จริงของคุณ
-
-        if (!liff.isLoggedIn()) {
-            liff.login();
-            return;
-        }
-
-        const profile = await liff.getProfile();
-        form.name.value = profile.displayName;
-        form.name.readOnly = true;
-    });
-</script>
+    </script>
 </body>
 </html>
