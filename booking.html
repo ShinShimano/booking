@@ -499,13 +499,24 @@
             }
         }
 
-        // ตรวจสอบการส่งฟอร์ม
+   // ตรวจสอบการส่งฟอร์ม
         form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (!selectedDate) {
-                showPopup('เกิดข้อผิดพลาด', 'กรุณาเลือกวันที่', 'error');
-                return;
-            }
+    e.preventDefault();
+
+    const phoneNumber = form.phonenumber.value.trim(); // ตัดช่องว่างหัว-ท้าย
+
+    // ตรวจสอบว่าเป็นตัวเลขเท่านั้น และต้อง 10 หลักพอดี
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!phoneRegex.test(phoneNumber)) {
+        showPopup('เกิดข้อผิดพลาด', 'กรุณากรอกเบอร์โทรให้ถูกต้อง (ตัวเลข 10 หลักติดกันเท่านั้น)', 'error');
+        return;
+    }
+
+    if (!selectedDate) {
+        showPopup('เกิดข้อผิดพลาด', 'กรุณาเลือกวันที่', 'error');
+        return;
+    }
             showPopup('<p class="text-blue-900">📆 ยืนยันการนัดหมาย</p>', `
                 <p>บริการ: ${form.service.value}</p>
                 <p>สาขา: ${form.locationservice.value}</p>
@@ -543,6 +554,4 @@
     </script>
 </body>
 </html>
-
-
             
