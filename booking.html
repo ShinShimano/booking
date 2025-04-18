@@ -568,7 +568,8 @@
             popup.style.display = 'flex';
         }
 
-         
+
+ // ⬇️ วางตรงนี้เลย
     document.addEventListener('DOMContentLoaded', async () => {
         await liff.init({ liffId: "2006389096-VmKBN6l7" }); // ใส่ LIFF ID จริงของคุณ
 
@@ -578,12 +579,12 @@
         }
 
         const profile = await liff.getProfile();
-        document.getElementById('name').value = profile.displayName;
-        document.getElementById('name').readOnly = true;
+        form.name.value = profile.displayName;
+        form.name.readOnly = true;
     });
+
          
-</script>
+    </script>
 </body>
 </html>
-
             
